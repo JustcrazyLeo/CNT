@@ -1,0 +1,70 @@
+<div class="admins-container">
+  <h2>Управление администраторами</h2>
+
+  <button class="btn-add" (click)="openAddModal()">+ Добавить админа</button>
+
+  <div *ngIf="loading" class="loading">Загрузка...</div>
+
+  <table class="admins-table" *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Логин</th>
+        <th>Активен</th>
+        <th>Дата рождения</th>
+        <th>Дата создания</th>
+        <th>Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let admin of admins">
+        <td>{{ admin.admin_id }}</td>
+        <td>{{ admin.admin_login }}</td>
+        <td>
+          <span [class]="admin.is_active_admin ? 'badge-active' : 'badge-inactive'">
+            {{ admin.is_active_admin ? 'Активен' : 'Неактивен' }}
+          </span>
+        </td>
+        <td>{{ admin.admin_birth_date || '—' }}</td>
+        <td>{{ admin.created_at | date:'dd.MM.yyyy' }}</td>
+        <td class="actions">
+          <button class="btn-edit" (click)="openEditModal(admin)">✏️ Редактировать</button>
+          <button class="btn-delete" (click)="deleteAdmin(admin.admin_id)">🗑️ Удалить</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Модальное окно -->
+  <div class="modal" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>{{ isEditMode ? 'Редактировать' : 'Добавить' }} администратора</h3>
+      
+      <div class="form-group">
+        <label>Логин</label>
+        <input [(ngModel)]="formData.admin_login" type="text" placeholder="Введите логин">
+      </div>
+      
+      <div class="form-group" *ngIf="!isEditMode">
+        <label>Пароль</label>
+        <input [(ngModel)]="formData.admin_password" type="password" placeholder="Введите пароль">
+      </div>
+      
+      <div class="form-group">
+        <label>
+          <input [(ngModel)]="formData.is_active_admin" type="checkbox"> Активен
+        </label>
+      </div>
+      
+      <div class="form-group">
+        <label>Дата рождения</label>
+        <input [(ngModel)]="formData.admin_birth_date" type="date">
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="btn-save" (click)="saveAdmin()">Сохранить</button>
+        <button class="btn-cancel" (click)="closeModal()">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>

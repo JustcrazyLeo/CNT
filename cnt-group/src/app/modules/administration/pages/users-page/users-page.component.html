@@ -1,0 +1,59 @@
+<div class="users-page__header">
+  <p>Пользователи</p>
+  <button (click)="onAddUserBtn()">Добавить пользователя</button>
+</div>
+
+<div class="users-page__content">
+  <div class="users-page__table-wrapper">
+    <!-- Используем обычную таблицу для простоты -->
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Логин</th>
+          <th>Имя</th>
+          <th>Фамилия</th>
+          <th>Роли</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let user of tableData"
+          [class.selected]="selectedTableRow?.userId === user.userId"
+          [class]="user.rowClass"
+          (click)="onUserSelect(user)">
+
+          <td [class.cell-admin]="user.isAdmin">{{ user.userId }}</td>
+          <td [class.cell-student]="user.isStudent">{{ user.userLogin }}</td>
+          <td [class.cell-both]="user.hasBothRoles">{{ user.userFirstName }}</td>
+          <td>{{ user.userLastName }}</td>
+
+          <td class="roles-cell">
+            <div class="role-indicators">
+              <span *ngIf="user.isAdmin" class="role-indicator admin" title="Администратор">A</span>
+              <span *ngIf="user.isStudent" class="role-indicator student" title="Студент">S</span>
+              <span *ngIf="user.hasNoRoles" class="role-indicator none" title="Нет ролей">—</span>
+            </div>
+            <span class="roles-text">{{ user.displayRoles }}</span>
+          </td>
+
+          <td class="actions">
+            <button (click)="onUserSelect(user); $event.stopPropagation()" class="btn-edit">
+              Редактировать
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <aside class="users-page__aside">
+    <app-add-user-form *ngIf="asideIndex == 1" />
+    <app-edit-user
+      *ngIf="asideIndex == 2 && selectedUser"
+      [selectedUser]="selectedUser"
+      (userUpdate)="updateUser($event)">
+    </app-edit-user>
+  </aside>
+</div>
