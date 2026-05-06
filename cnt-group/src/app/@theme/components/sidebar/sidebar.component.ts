@@ -21,49 +21,71 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   selectedItem: MenuItem | null = null;
   isSidebarVisible: boolean = true;
+  private resizeTimer: any;
 
   constructor(private menuService: MenuService) { }
 
   ngOnInit() {
-
     const savedState = localStorage.getItem('sidebarState');
     if (savedState !== null) {
       this.isSidebarVisible = JSON.parse(savedState);
     }
 
     this.updateBodyClass();
+    this.updateCssVariables();
 
     this.menuService.currentItem$.subscribe(item => {
       this.selectedItem = item;
     });
   }
 
-toggleSidebar() {
-  this.isSidebarVisible = !this.isSidebarVisible;
-  localStorage.setItem('sidebarState', JSON.stringify(this.isSidebarVisible));
-  this.updateBodyClass();
-}
-
-private updateBodyClass() {
-  document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed');
-  if (this.isSidebarVisible) {
-    document.body.classList.add('sidebar-expanded');
-  } else {
-    document.body.classList.add('sidebar-collapsed');
+  toggleSidebar() {
+    this.isSidebarVisible = !this.isSidebarVisible;
+    localStorage.setItem('sidebarState', JSON.stringify(this.isSidebarVisible));
+    this.updateBodyClass();
+    this.updateCssVariables();
   }
-}
-  @HostListener('window:resize', ['$event'])
-  onResize(event: any) {
-    if (window.innerWidth < 576) {
-      if (this.isSidebarVisible) {
-        this.isSidebarVisible = false;
-        this.updateBodyClass();
-      }
+
+  private updateBodyClass() {
+    document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed');
+    if (this.isSidebarVisible) {
+      document.body.classList.add('sidebar-expanded');
+    } else {
+      document.body.classList.add('sidebar-collapsed');
     }
   }
 
-  ngOnDestroy() {
+  private updateCssVariables() {
+    const root = document.documentElement;
 
+    if (window.innerWidth <= 576) {
+      root.style.setProperty('--sidebar-width', '100%');
+      root.style.setProperty('--sidebar-width-collapsed', '0px');
+    } else if (window.innerWidth <= 768) {
+      root.style.setProperty('--sidebar-width', '200px');
+      root.style.setProperty('--sidebar-width-collapsed', '50px');
+    } else {
+      root.style.setProperty('--sidebar-width', '250px');
+      root.style.setProperty('--sidebar-width-collapsed', '60px');
+    }
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    clearTimeout(this.resizeTimer);
+    this.resizeTimer = setTimeout(() => {
+      this.updateCssVariables();
+
+      if (window.innerWidth < 576 && this.isSidebarVisible) {
+        this.isSidebarVisible = false;
+        this.updateBodyClass();
+        localStorage.setItem('sidebarState', 'false');
+      }
+    }, 150);
+  }
+
+  ngOnDestroy() {
     document.body.classList.remove('sidebar-expanded', 'sidebar-collapsed');
+    clearTimeout(this.resizeTimer);
   }
 }

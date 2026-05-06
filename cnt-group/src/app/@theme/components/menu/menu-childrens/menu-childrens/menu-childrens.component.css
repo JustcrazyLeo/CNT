@@ -42,7 +42,7 @@
 }
 
 .submenu__item:focus-visible {
-  outline: 2px solid var(--focus-color, #3498db);
+  outline: 2px solid var(--focus-color, #d6c90b);
   outline-offset: 2px;
 }
 
@@ -92,7 +92,7 @@
   margin-left: auto;
   font-size: 1.1rem;
   font-weight: bold;
-  color: var(--focus-color, #3498db);
+  color: var(--focus-color, #2bb608);
   min-width: 20px;
   text-align: center;
   transition: all 0.3s ease;

@@ -1,31 +1,32 @@
 <aside class="sidebar" [class.show]="isSidebarVisible">
-  <!-- Кнопка внутри сайдбара -->
   <button class="toggle-button" (click)="toggleSidebar()">
-    <span>{{ isSidebarVisible ? '◀============' : '==▶' }}</span>
+    <span>{{ isSidebarVisible ? '◀ Скрыть' : '☰' }}</span>
   </button>
 
-  <div class="sidebar-header">
-    <h2>Навигация</h2>
-  </div>
+  <div class="sidebar-content">
+    <div class="sidebar-header">
+      <h2>Навигация</h2>
+    </div>
 
-  <nav class="sidebar-nav">
-    <ul>
-      <li *ngFor="let item of menuItems">
-        <a [href]="item.link" class="nav-link">
-          <span class="nav-icon">{{item.icon}}</span>
-          <span class="nav-label">{{item.label}}</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+    <nav class="sidebar-nav">
+      <ul>
+        <li *ngFor="let item of menuItems">
+          <a [href]="item.link" class="nav-link">
+            <span class="nav-icon">{{item.icon}}</span>
+            <span class="nav-label">{{item.label}}</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
 
-  <div class="sidebar-divider"></div>
+    <div class="sidebar-divider"></div>
 
-  <h3 class="dynamic-menu-title">Разделы</h3>
+    <h3 class="dynamic-menu-title">Разделы</h3>
 
-  <app-menu-childrens [sidebarHidden]="!isSidebarVisible" />
+    <app-menu-childrens [sidebarHidden]="!isSidebarVisible" />
 
-  <div class="sidebar-footer">
-    <p>Версия 1.0.0</p>
+    <div class="sidebar-footer">
+      <p>Версия 1.0.0</p>
+    </div>
   </div>
 </aside>
