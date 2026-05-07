@@ -17,9 +17,8 @@ export class AdminService {
     if (includeInactive !== undefined) {
       params = params.set('include_inactive', includeInactive.toString());
     }
-    return this.http.get<any>(`${this.apiUrl}/admins`, { params, withCredentials: true }).pipe(
-      map(response => response.admins)
-    );
+    return this.http.get<any>(`${this.apiUrl}/admins`, { params, withCredentials: true })
+      .pipe(map(response => response.admins));
   }
 
   getAdminById(id: number): Observable<Admin> {
