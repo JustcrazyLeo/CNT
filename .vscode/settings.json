@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./application/admins"
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:venv"
+}

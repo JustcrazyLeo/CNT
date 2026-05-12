@@ -1,0 +1,19 @@
+<header>Редактировать администратора</header>
+<main>
+  <form [formGroup]="editAdminForm" (ngSubmit)="onSubmit()">
+    <div>
+      <input type="text" placeholder="Логин" formControlName="adminLogin">
+    </div>
+    <div>
+      <input type="password" placeholder="Новый пароль" formControlName="adminPassword">
+    </div>
+    <div>
+      <input type="date" formControlName="adminBirthDate">
+    </div>
+    <label>
+      <input type="checkbox" formControlName="isActive">
+      Активен
+    </label>
+    <button type="submit">Обновить</button>
+  </form>
+</main>
