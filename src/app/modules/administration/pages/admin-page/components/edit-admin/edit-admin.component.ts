@@ -1,6 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-edit-admin',
@@ -13,11 +12,11 @@ export class EditAdminComponent implements OnInit, OnChanges {
 
   editAdminForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private http: HttpClient) {
+  constructor(private fb: FormBuilder) {
     this.editAdminForm = this.fb.group({
-      adminLogin: ['', [Validators.required]],
-      adminPassword: ['', [Validators.required]],
-      adminBirthDate: [''],
+      adminLogin: ['', [Validators.required, Validators.minLength(2)]],
+      adminPassword: [''], // не обязателен при редактировании
+      adminBirthDate: ['', [Validators.required]],
       isActive: [true]
     });
   }
@@ -44,14 +43,29 @@ export class EditAdminComponent implements OnInit, OnChanges {
   }
 
   onSubmit() {
-    if (this.editAdminForm.valid && this.selectedAdmin) {
-      const updated = {
-        ...this.selectedAdmin,
-        admin_login: this.editAdminForm.value.adminLogin,
-        admin_birth_date: this.editAdminForm.value.adminBirthDate,
-        is_active_admin: this.editAdminForm.value.isActive
-      };
-      this.adminUpdated.emit(updated);
+    if (this.editAdminForm.invalid) {
+      this.editAdminForm.markAllAsTouched();
+      return;
     }
+    if (!this.selectedAdmin) return;
+
+    const updated = { ...this.selectedAdmin };
+    updated.admin_login = this.editAdminForm.value.adminLogin;
+    updated.admin_birth_date = this.editAdminForm.value.adminBirthDate;
+    updated.is_active_admin = this.editAdminForm.value.isActive;
+
+    // Если пароль введён – обновляем хеш
+    const newPassword = this.editAdminForm.value.adminPassword;
+    if (newPassword && newPassword.trim().length >= 6) {
+      updated.admin_password_hash = newPassword;
+    }
+
+    this.adminUpdated.emit(updated);
+  }
+
+  getFieldErrors(fieldName: string) {
+    const field = this.editAdminForm.get(fieldName);
+    if (field?.touched && field?.invalid) return field.errors;
+    return null;
   }
 }

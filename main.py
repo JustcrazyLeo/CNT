@@ -19,8 +19,8 @@ app.add_middleware(
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "Azaz1234@",
-    "database": "palyan",
+    "password": "leovalt",
+    "database": "leovalt",
     "charset": "utf8",
     "autocommit": True,
 }
@@ -30,6 +30,12 @@ class AdminCreate(BaseModel):
     admin_password_hash: str
     admin_birth_date: str = None
     is_active_admin: bool = True
+
+class AdminUpdate(BaseModel):
+    admin_login: str = None
+    admin_password_hash: str = None
+    admin_birth_date: str = None
+    is_active_admin: bool = None
 
 @app.get("/api/admins")
 def get_admins():
@@ -53,14 +59,37 @@ def create_admin(admin: AdminCreate):
         )
         conn.commit()
         new_id = cursor.lastrowid
-        return {"data": {
-            "admin_id": new_id,
-            "admin_login": admin.admin_login,
-            "admin_password_hash": admin.admin_password_hash,
-            "admin_birth_date": admin.admin_birth_date,
-            "is_active_admin": admin.is_active_admin,
-            "created_at": ""
-        }}
+        return {"data": {"admin_id": new_id, "admin_login": admin.admin_login, "admin_password_hash": admin.admin_password_hash, "admin_birth_date": admin.admin_birth_date, "is_active_admin": admin.is_active_admin, "created_at": ""}}
+    finally:
+        conn.close()
+
+@app.put("/api/admins/{admin_id}")
+def update_admin(admin_id: int, admin: AdminUpdate):
+    conn = pymysql.connect(**DB_CONFIG)
+    try:
+        cursor = conn.cursor()
+        updates = []
+        values = []
+
+        if admin.admin_login is not None:
+            updates.append("admin_login = %s")
+            values.append(admin.admin_login)
+        if admin.admin_password_hash is not None:
+            updates.append("admin_password_hash = %s")
+            values.append(admin.admin_password_hash)
+        if admin.admin_birth_date is not None:
+            updates.append("admin_birth_date = %s")
+            values.append(admin.admin_birth_date)
+        if admin.is_active_admin is not None:
+            updates.append("is_active_admin = %s")
+            values.append(admin.is_active_admin)
+
+        if updates:
+            values.append(admin_id)
+            cursor.execute(f"UPDATE admins SET {', '.join(updates)} WHERE admin_id = %s", values)
+            conn.commit()
+            return {"status": "ok", "message": "Админ обновлён"}
+        return {"status": "ok", "message": "Нет данных для обновления"}
     finally:
         conn.close()
 

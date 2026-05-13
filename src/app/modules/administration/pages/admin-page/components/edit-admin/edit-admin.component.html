@@ -2,13 +2,23 @@
 <main>
   <form [formGroup]="editAdminForm" (ngSubmit)="onSubmit()">
     <div>
-      <input type="text" placeholder="Логин" formControlName="adminLogin">
+      <input type="text" placeholder="Логин" formControlName="adminLogin"
+             [ngClass]="{ invalid: getFieldErrors('adminLogin') }">
+      <div *ngIf="getFieldErrors('adminLogin')">
+        <small *ngIf="getFieldErrors('adminLogin')?.['required']">Логин обязателен</small>
+        <small *ngIf="getFieldErrors('adminLogin')?.['minlength']">Логин должен быть не менее 2 символов</small>
+      </div>
     </div>
     <div>
-      <input type="password" placeholder="Новый пароль" formControlName="adminPassword">
+      <input type="password" placeholder="Новый пароль (оставьте пустым, чтобы не менять)"
+             formControlName="adminPassword">
     </div>
     <div>
-      <input type="date" formControlName="adminBirthDate">
+      <input type="date" formControlName="adminBirthDate"
+             [ngClass]="{ invalid: getFieldErrors('adminBirthDate') }">
+      <div *ngIf="getFieldErrors('adminBirthDate')">
+        <small *ngIf="getFieldErrors('adminBirthDate')?.['required']">Дата рождения обязательна</small>
+      </div>
     </div>
     <label>
       <input type="checkbox" formControlName="isActive">
