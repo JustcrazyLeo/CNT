@@ -19,8 +19,8 @@ app.add_middleware(
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
-    "password": "leovalt",
-    "database": "leovalt",
+    "password": "Azaz1234@",
+    "database": "palyan",
     "charset": "utf8",
     "autocommit": True,
 }
@@ -90,6 +90,17 @@ def update_admin(admin_id: int, admin: AdminUpdate):
             conn.commit()
             return {"status": "ok", "message": "Админ обновлён"}
         return {"status": "ok", "message": "Нет данных для обновления"}
+    finally:
+        conn.close()
+
+@app.delete("/api/admins/{admin_id}")
+def delete_admin(admin_id: int):
+    conn = pymysql.connect(**DB_CONFIG)
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM admins WHERE admin_id = %s", (admin_id,))
+        conn.commit()
+        return {"status": "ok", "message": "Админ удалён"}
     finally:
         conn.close()
 

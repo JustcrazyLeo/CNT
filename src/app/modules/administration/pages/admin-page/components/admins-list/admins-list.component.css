@@ -23,14 +23,14 @@
 }
 
 .users-page__table-wrapper {
-  width: 70%;
+  width: 91%;
   background-color: var(--block-background);
   overflow-x: auto;
   overflow-y: auto;
 }
 
 .users-page__aside {
-  width: 30%;
+  width: 20%;
   background-color: var(--block-background);
   overflow-y: auto;
 }

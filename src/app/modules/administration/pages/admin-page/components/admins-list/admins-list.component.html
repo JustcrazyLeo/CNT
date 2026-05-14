@@ -8,22 +8,23 @@
     <app-table
       [columnHeaders]="['admin_id', 'Логин', 'Пароль', 'Активен', 'Дата рождения', 'Дата создания']"
       [data]="admins"
-      (rowClick)="onAdminSelect($event)">
+      (rowClick)="onAdminSelect($event)"
+      (deleteClick)="deleteAdmin($event.admin_id)">
     </app-table>
   </div>
 
   <aside class="users-page__aside">
-    <app-add-admin-form 
+    <app-add-admin-form
       *ngIf="asideIndex === 1"
       (adminAdded)="onAdminAdded($event)">
     </app-add-admin-form>
-    
+
     <app-edit-admin
       *ngIf="asideIndex === 2"
       [selectedAdmin]="selectedAdmin"
       (adminUpdated)="onAdminUpdated($event)">
     </app-edit-admin>
-    
+
     <main *ngIf="asideIndex === 0">
       <p>Выберите администратора или добавьте нового</p>
     </main>
